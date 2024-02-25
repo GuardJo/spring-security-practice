@@ -66,3 +66,11 @@ AuthenticationFilter ->> SecurityContext : 7. 인증된 처리 결과를 저장
 - `UserDetailService` 구현에 맞게 재구성하여 사용함
 - 또한 초기 저장 시에 암호 필드에 대한 인코딩도 수행함
 	- *Spring Boot의 기본 구현체는 별도의 암호화를 하지 않음*
+
+> [!NOTE]
+> Spring Security의 기본 구현체는 HTTP Basic 기반 헤더 처리를 기반으로 한다.
+> 
+> 서버 구동 시 아래와 같이 암호를 생성하며 user:{password} 형태로 HTTP Basic 인증 헤더를 통해 인증 요청을 보낼 수 있다.
+> 
+> ![](images/Pasted%20image%2020240226005453.png)
+> 
