@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-	private final UserDetailsService userDetailsService; // Bean으로 등록된 InMemoryUserDetailsManager 주입
-	private final PasswordEncoder passwordEncoder; // Bean으로 등록된 NoOpPasswordEncoder 주입
+	private final UserDetailsService userDetailsService;
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {

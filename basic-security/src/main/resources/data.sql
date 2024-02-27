@@ -1,7 +1,7 @@
 insert into dummy_user(username, password)
-VALUES ('test1', '1234');
+VALUES ('test1', '{noop}1234');
 insert into dummy_user(username, password)
-values ('test2', '1234');
+values ('test2', '{bcrypt}1234');
 insert into dummy_authority(username, authority)
 VALUES ('test1', 'READ');
 insert into dummy_authority(username, authority)
