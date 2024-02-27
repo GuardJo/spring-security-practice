@@ -1,7 +1,6 @@
 package com.guardjo.practice.spring.security.basicsecurity.config;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 
 import javax.sql.DataSource;
 
@@ -12,8 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -46,7 +45,12 @@ public class SecurityConfig {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
-		SecureRandom secureRandom = SecureRandom.getInstanceStrong();
-		return new BCryptPasswordEncoder(4, secureRandom);
+		int cpuCost = 16384;
+		int memoryCost = 8;
+		int parallelization = 1;
+		int keyLength = 32;
+		int saltLength = 64;
+
+		return new SCryptPasswordEncoder(cpuCost, memoryCost, parallelization, keyLength, saltLength);
 	}
 }
