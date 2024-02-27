@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 /**
  * 암호화를 하지 않는 일반 문자열 반환 PasswordEncoder 구현체
  */
+@Deprecated
 public class PlainTextPasswordEncoder implements PasswordEncoder {
 	@Override
 	public String encode(CharSequence rawPassword) {
