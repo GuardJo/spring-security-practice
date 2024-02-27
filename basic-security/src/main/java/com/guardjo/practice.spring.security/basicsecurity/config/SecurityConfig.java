@@ -1,6 +1,7 @@
 package com.guardjo.practice.spring.security.basicsecurity.config;
 
-import static org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.sql.DataSource;
 
@@ -11,8 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -44,8 +45,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		String secret = "test";
-		return new Pbkdf2PasswordEncoder(secret, 18500, 256, PBKDF2WithHmacSHA256);
+	public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
+		SecureRandom secureRandom = SecureRandom.getInstanceStrong();
+		return new BCryptPasswordEncoder(4, secureRandom);
 	}
 }
