@@ -24,7 +24,10 @@ public class SecurityConfig {
 			})
 			.csrf(AbstractHttpConfigurer::disable)
 			.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-			.httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.init(http));
+			.httpBasic(httpSecurityHttpBasicConfigurer -> {
+				httpSecurityHttpBasicConfigurer.init(http);
+				httpSecurityHttpBasicConfigurer.authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+			});
 		return http.build();
 	}
 
