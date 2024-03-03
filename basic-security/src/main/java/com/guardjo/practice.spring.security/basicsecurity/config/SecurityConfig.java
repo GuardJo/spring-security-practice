@@ -26,7 +26,8 @@ public class SecurityConfig {
 			.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 			.httpBasic(AbstractHttpConfigurer::disable)
 			.formLogin(custom -> {
-				custom.defaultSuccessUrl("/");
+				custom.successHandler(new CustomSuccessHandler());
+				custom.failureHandler(new CustomFailureHandler());
 			});
 		return http.build();
 	}
