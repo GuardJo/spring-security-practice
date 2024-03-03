@@ -24,9 +24,9 @@ public class SecurityConfig {
 			})
 			.csrf(AbstractHttpConfigurer::disable)
 			.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-			.httpBasic(httpSecurityHttpBasicConfigurer -> {
-				httpSecurityHttpBasicConfigurer.init(http);
-				httpSecurityHttpBasicConfigurer.authenticationEntryPoint(new CustomAuthenticationEntryPoint());
+			.httpBasic(AbstractHttpConfigurer::disable)
+			.formLogin(custom -> {
+				custom.defaultSuccessUrl("/");
 			});
 		return http.build();
 	}
