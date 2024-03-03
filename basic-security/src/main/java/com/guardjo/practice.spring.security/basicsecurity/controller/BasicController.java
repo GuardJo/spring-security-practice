@@ -6,8 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.concurrent.DelegatingSecurityContextCallable;
-import org.springframework.security.concurrent.DelegatingSecurityContextRunnable;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,10 +47,9 @@ public class BasicController {
 		Runnable task = new AuthenticateRunner();
 
 		ExecutorService executorService = Executors.newCachedThreadPool();
+		executorService = new DelegatingSecurityContextExecutorService(executorService);
 
-		DelegatingSecurityContextRunnable runner = new DelegatingSecurityContextRunnable(task);
-
-		executorService.execute(runner);
+		executorService.execute(task);
 
 	}
 
@@ -62,9 +60,8 @@ public class BasicController {
 		Callable<String> task = new AuthenticationCaller();
 
 		ExecutorService executorService = Executors.newCachedThreadPool();
+		executorService = new DelegatingSecurityContextExecutorService(executorService);
 
-		DelegatingSecurityContextCallable<String> caller = new DelegatingSecurityContextCallable<>(task);
-
-		return executorService.submit(caller).get();
+		return executorService.submit(task).get();
 	}
 }
