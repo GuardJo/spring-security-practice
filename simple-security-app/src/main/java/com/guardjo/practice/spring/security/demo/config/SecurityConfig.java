@@ -8,9 +8,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.guardjo.practice.spring.security.demo.config.auth.CustomAuthProvider;
@@ -50,12 +49,7 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public PasswordEncoder bcryptEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public PasswordEncoder scryptEncoder() {
-		return SCryptPasswordEncoder.defaultsForSpringSecurity_v5_8();
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	}
 }

@@ -32,7 +32,12 @@ public class CustomUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return account.getPassword();
+		String password = account.getPassword();
+
+		return switch (account.getAlgorithm()) {
+			case scrypt -> "{scrypt}" + password;
+			default -> "{bcrypt}" + password;
+		};
 	}
 
 	@Override
