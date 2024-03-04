@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+</head>
+<body>
+<h2 th:text="'Hello, ' + ${username} + '!'"></h2>
+<p><a href="/logout">Logout</a></p>
+
+<h2>Products</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${products.empty}">
+        <td colspan="2">No Data</td>
+    </tr>
+    <tr th:each="product : ${products}">
+        <td><span th:text="${product.name}">Name</span></td>
+        <td><span th:text="${product.price}">Price</span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
