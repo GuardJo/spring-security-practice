@@ -9,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.guardjo.practice.spring.security.demo.domain.Account;
 
+import lombok.Getter;
+
+@Getter
 public class CustomUserDetails implements UserDetails {
 	private final Account account;
 
