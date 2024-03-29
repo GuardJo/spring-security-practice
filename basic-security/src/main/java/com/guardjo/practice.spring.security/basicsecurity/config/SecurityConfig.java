@@ -15,6 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAnyAuthority;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAuthority;
+
 @Configuration
 public class SecurityConfig {
     @Bean
@@ -25,6 +28,10 @@ public class SecurityConfig {
                             .hasAnyAuthority("READ", "WRITE")
                             .requestMatchers(HttpMethod.POST, "/auth/**")
                             .hasAuthority("WRITE")
+                            .requestMatchers(HttpMethod.GET, "/access/**")
+                            .access(hasAnyAuthority("READ", "WRITE"))
+                            .requestMatchers(HttpMethod.POST, "/access/**")
+                            .access(hasAuthority("READ"))
                             .anyRequest().authenticated();
                 })
                 .csrf(AbstractHttpConfigurer::disable)

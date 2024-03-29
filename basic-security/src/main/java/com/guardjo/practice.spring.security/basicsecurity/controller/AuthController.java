@@ -27,4 +27,22 @@ public class AuthController {
 
         return "Successes";
     }
+
+    @GetMapping("/access")
+    public String readAccess(Authentication authentication) {
+        String username = authentication.getName();
+
+        log.info("Request Access Read, username = {}", username);
+
+        return "Successes";
+    }
+
+    @PostMapping("/access")
+    public String writeAccess(Authentication authentication) {
+        String username = authentication.getName();
+
+        log.info("Request Access Write, username = {}", username);
+
+        return "Successes";
+    }
 }
