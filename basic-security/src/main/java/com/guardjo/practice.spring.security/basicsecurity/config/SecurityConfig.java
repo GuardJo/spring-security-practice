@@ -15,8 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
-import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAnyAuthority;
-import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAuthority;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAnyRole;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
 
 @Configuration
 public class SecurityConfig {
@@ -25,13 +25,13 @@ public class SecurityConfig {
         http.authorizeHttpRequests(registry -> {
                     registry.requestMatchers(PathRequest.toH2Console()).permitAll()
                             .requestMatchers(HttpMethod.GET, "/auth/**")
-                            .hasAnyAuthority("READ", "WRITE")
+                            .hasAnyRole("USER", "ADMIN")
                             .requestMatchers(HttpMethod.POST, "/auth/**")
-                            .hasAuthority("WRITE")
+                            .hasRole("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/access/**")
-                            .access(hasAnyAuthority("READ", "WRITE"))
+                            .access(hasAnyRole("USER", "ADMIN"))
                             .requestMatchers(HttpMethod.POST, "/access/**")
-                            .access(hasAuthority("READ"))
+                            .access(hasRole("MANAGER"))
                             .anyRequest().authenticated();
                 })
                 .csrf(AbstractHttpConfigurer::disable)
