@@ -1,10 +1,9 @@
 package com.guardjo.practice.spring.security.basicsecurity.config;
 
-import javax.sql.DataSource;
-
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -14,39 +13,52 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import javax.sql.DataSource;
+
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasAnyRole;
+import static org.springframework.security.authorization.AuthorityAuthorizationManager.hasRole;
+
 @Configuration
 public class SecurityConfig {
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(registry -> {
-				registry.requestMatchers(PathRequest.toH2Console()).permitAll()
-					.anyRequest().authenticated();
-			})
-			.csrf(AbstractHttpConfigurer::disable)
-			.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-			.httpBasic(AbstractHttpConfigurer::disable)
-			.formLogin(custom -> {
-				custom.successHandler(new CustomSuccessHandler());
-				custom.failureHandler(new CustomFailureHandler());
-			});
-		return http.build();
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(registry -> {
+                    registry.requestMatchers(PathRequest.toH2Console()).permitAll()
+                            .requestMatchers(HttpMethod.GET, "/auth/**")
+                            .hasAnyRole("USER", "ADMIN")
+                            .requestMatchers(HttpMethod.POST, "/auth/**")
+                            .hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/access/**")
+                            .access(hasAnyRole("USER", "ADMIN"))
+                            .requestMatchers(HttpMethod.POST, "/access/**")
+                            .access(hasRole("MANAGER"))
+                            .anyRequest().authenticated();
+                })
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(custom -> {
+                    custom.successHandler(new CustomSuccessHandler());
+                    custom.failureHandler(new CustomFailureHandler());
+                });
+        return http.build();
+    }
 
-	@Bean
-	public UserDetailsService userDetailsService(DataSource dataSource) {
-		String userByUsernameQuery = "select u.username, u.password, u.enabled from dummy_user u where u.username = ?";
-		String authsByUserQuery = "select a.username, a.authority from dummy_authority a where a.username = ?";
+    @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        String userByUsernameQuery = "select u.username, u.password, u.enabled from dummy_user u where u.username = ?";
+        String authsByUserQuery = "select a.username, a.authority from dummy_authority a where a.username = ?";
 
-		var userDetailsService = new JdbcUserDetailsManager(dataSource);
+        var userDetailsService = new JdbcUserDetailsManager(dataSource);
 
-		userDetailsService.setUsersByUsernameQuery(userByUsernameQuery);
-		userDetailsService.setAuthoritiesByUsernameQuery(authsByUserQuery);
+        userDetailsService.setUsersByUsernameQuery(userByUsernameQuery);
+        userDetailsService.setAuthoritiesByUsernameQuery(authsByUserQuery);
 
-		return userDetailsService;
-	}
+        return userDetailsService;
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 }
